@@ -1,4 +1,4 @@
-local tick = require("tick")
+local tick = require("lib.tick")
 
 image = {
   frames = 3,
@@ -25,7 +25,7 @@ function juno.onLoad()
   image.data = juno.Buffer.fromFile("zombie.png")
 end
 function juno.onUpdate(dt)
-  require("stalker").update(dt)
+  require("lib.stalker").update(dt)
   tick.update(dt)
   -- print(image.anfm)
   play(dt)
