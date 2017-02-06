@@ -1,16 +1,23 @@
 Tile = require 'tile'
+osc = require 'osc'
 
 function juno.onLoad()
+  juno.debug.setVisible(true)
   G.tile = {}
-  local blue = 1
   for x = 1, 16 do
     G.tile[x] = {}
     for y = 1, 16 do
       local r, g, b
-      r = (16*math.random(x)-1)/255
-      g = (16*math.random(y)-1)/255
-      b = (16*math.random((y+x)/2)-1)/255
-      t = Tile((x*32)-32,(y*32)-32,32,32,{r*3,g*3,b/3})
+      -- r = (16*math.random(x)-1)/255
+      -- g = (16*math.random(y)-1)/255
+      -- b = (16*math.random((y+x)/2)-1)/255
+      r = (16 * x - 1) / 255
+      g = (16 * y - 1) / 255
+      b = ((16 * (y + x) / 2) - 1) / 255
+      t = Tile((x*32)-32,(y*32)-32,32,32,{b,g,r},440,1)
+      t:set_freq(440)
+      t:set_amp(1)
+      t:set_gen('sqr')
       G.tile[x][y] = t
     end
   end
@@ -30,7 +37,7 @@ function juno.onDraw()
 end
 
 function juno.onKeyDown(key, char)
-  if k == 'escape' then os.exit() end
+  if key == 'escape' then os.exit() end
 end
 
 -- function juno.onMouseMove(x, y)
