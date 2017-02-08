@@ -8,27 +8,33 @@ class Tile
     @height = h or 0
     @color = c or {1, 1, 1}
     @buf = juno.Buffer.fromBlank @width, @height
-    @sound = juno.Source.fromBlank!
 
   set_freq: (@freq) =>
 
   set_amp: (@amp) =>
 
   set_gen: (generator) =>
-    cb = (t) ->
-      switch generator
-        when 'sqr' gen = osc.sqr @freq, @amp
-        when 'tri' gen = osc.tri @freq, @amp
-        when 'saw' gen = osc.saw @freq, @amp
-        when 'sin' gen = osc.sin @freq, @amp
-        when 'wht' gen = osc.wht!
-        when 'pnk' gen = osc.pnk!
-        else gen = osc.wht!
+    local gen
+    local delay
+    delay = { idx: 0, max: 44100 * .4 }
+    switch generator
+      when 'sqr' gen = osc.sqr @freq, @amp
+      when 'tri' gen = osc.tri @freq, @amp
+      when 'saw' gen = osc.saw @freq, @amp
+      when 'sin' gen = osc.sin @freq, @amp
+      when 'wht' gen = osc.wht!
+      when 'pnk' gen = osc.pnk!
+      else gen = osc.wht!
+    (t) ->
       for i = 1, #t, 2
-        out = gen i
+        dt = 1 / 44100
+        phase = @freq * .005 + dt
+        out = gen i % phase
+        out *= .05
+        out += (delay[delay.idx] or 0) * .5
+        delay[delay.idx] = out
+        delay.idx = (delay.idx + 1) % delay.max
         t[i], t[i + 1] = out, out
-    @sound\setCallback cb
-
 
   update: (dt) =>
     if false
@@ -39,7 +45,7 @@ class Tile
 
   -- G.tile[1][1].sound:setCallback(function(t)
   --   local gen = osc.wht()
-  --   for i = 1, #t, 2 do 
+  --   for i = 1, #t, 2 do
   --     out = gen()
   --     t[i], t[i + 1] = out, out
   --   end

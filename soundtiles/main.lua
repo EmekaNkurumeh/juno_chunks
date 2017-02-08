@@ -8,16 +8,13 @@ function juno.onLoad()
     G.tile[x] = {}
     for y = 1, 16 do
       local r, g, b
-      -- r = (16*math.random(x)-1)/255
-      -- g = (16*math.random(y)-1)/255
-      -- b = (16*math.random((y+x)/2)-1)/255
       r = (16 * x - 1) / 255
       g = (16 * y - 1) / 255
       b = ((16 * (y + x) / 2) - 1) / 255
       t = Tile((x*32)-32,(y*32)-32,32,32,{b,g,r},440,1)
-      t:set_freq(440)
+      t:set_freq(400)
       t:set_amp(1)
-      t:set_gen('sqr')
+      juno.audio.master:setCallback(t:set_gen('saw'))
       G.tile[x][y] = t
     end
   end
