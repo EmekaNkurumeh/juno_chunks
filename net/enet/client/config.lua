@@ -1,7 +1,7 @@
 function init()
-  dofile("init.lua")
+  dofile("../../init.lua")
   require("moonscript")
-  require("socket")
+  require("enet")
 end
 
 xpcall(init, os.exit)

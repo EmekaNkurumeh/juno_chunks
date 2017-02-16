@@ -1,42 +1,45 @@
 #!/usr/bin/env moon
 
-socket = require 'socket'
+init = ->
+  dofile "../../init.lua"
+
+xpcall init, os.exit
+
+require "enet"
 
 server = {
   running: true,
-  port: arg[1] or 8080
+  port: arg[1] or 8081
   client: {}
+  timeout: 100
 }
 
-server.udp = socket.udp!
-server.udp\settimeout 0
-res, err = server.udp\setsockname '*', server.port
+server.udp = enet.host_create "localhost" .. ":" .. server.port
 
-if res
-  print('*server started on port ' .. server.port .. '*')
+if server.udp
+  print "*server started on port " .. server.port .. "*"
 else
-  error err
+  error "*could not start server*"
 
 while server.running
-  data, msg_or_ip, port_or_nil = server.udp\receivefrom!
-  if data
-    cmd, id, msg = data\match '(%a+) (%x*) (.*)'
-    switch cmd
-      when 'post'
-        if id and msg
-          print id .. ': ' .. msg
-          for _, info in pairs server.client
-            server.udp\sendto id .. ' ' .. msg, info.ip, info.port
-      when 'login'
-        server.client[id] = ip: msg_or_ip, port: port_or_nil
-        print '* ' .. id .. ' connected *'
-      when 'logout'
-        server.client[id] = nil
-        print '* ' .. id .. ' disconnected *'
-      else
-        print data, cmd, id, msg
-  elseif msg_or_ip != 'timeout' then
-  	error 'unknown network error: ' .. tostring msg
-  socket.sleep 0.01
+  event = server.udp\service server.timeout
+  while event
+    switch event.type
+      when "recieve"
+        print "got message: ", event.data
+        -- id, msg = data\match "(%x*) (.*)"
+        -- if id and msg
+          -- print id .. ": " .. msg
+          -- server.udp\broadcast id .. " " .. msg
+          --
+      when "connect"
+        -- print "* " .. event.peer .. " connected *"
+        print "* connected *"
 
-server.udp\close!
+      when "disconnect"
+        -- print "* " .. event.peer .. " disconnected *"
+        print "* disconnected *"
+
+    event = server.udp\service!
+
+server.udp\flush!

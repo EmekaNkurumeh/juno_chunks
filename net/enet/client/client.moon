@@ -1,4 +1,5 @@
-socket = require 'socket'
+require "enet"
+_  = require "lume"
 
 math.randomseed os.time!
 
@@ -12,103 +13,118 @@ class client
     @history = {}
     @lines = {}
 
-    @textbuf = ''
-    @inbuf = ''
-    @enbuf = ''
-    @caret = '_'
+    @textbuf = ""
+    @inbuf = ""
+    @enbuf = ""
+    @caret = "_"
 
     @font = juno.Font.fromEmbedded 16
     @framebuffer = juno.Buffer.fromBlank juno.graphics.getSize!
     @returnbuffer = juno.Buffer.fromBlank juno.graphics.getSize!
 
-    @port = port or 8080
-    @addr = addr or 'localhost'
-    @id = id or '%06x'\format math.random 0xffffff
+    @port = port or 8081
+    @addr = addr or "localhost"
+    @id = id or "%06x"\format math.random 0xffffff
     @updr = updr or 0.1
 
   connect: =>
-    @udp = socket.udp!
-    @udp\settimeout 0
-    @udp\setpeername @addr, @port
-    @udp\send 'login %s '\format @id
-    print '* ' .. @id .. ' successfully connected *'
+    @host = enet.host_create!
+    @server = @host\connect @addr .. ":" .. @port
+    event = @host\service 100
+    if event
+      if event.type == "connect"
+        print "* #{@id} connected to #{event.peer}*"
 
   disconnect: =>
-    @udp\send 'logout %s '\format @id
-    @udp\close!
-    print '* ' .. @id .. ' successfully disconnected *'
+    @server\disconnect!
+    @host\flush!
+    event = @host\service 100
+    if event
+      if event.type == "disconnect"
+        print "* #{@id} disconnected from #{event.peer}*"
 
   update: (dt) =>
     @ticks += dt
-    @caret = (juno.time.getTime! % .6 < .3) and '_' or ' '
+    @caret = (juno.time.getTime! % .6 < .3) and "_" or " "
     if @ticks > @updr
-      if @line then @udp\send @line
-      if @line then @line = nil
-      data, _error = @udp\receive!
-      while data
-        id, msg = data\match '(%x*) ?(.*)'
-        table.insert @lines, id .. ': ' .. msg
-        data, _error = @udp\receive!
-      if _error and _error != 'timeout' then error 'unknown network error: ' .. tostring _error
+      event = @host\service 100
+      -- if @line then event.peer\send @line
+      -- if @line then @line = nil
+      while event
+        switch event.type
+          when "receive"
+            print event.data
+            event.peer\send "jh"
+          when "connect"
+            print "*#{@id} connected to #{event.peer}*"
+            event.peer\send "hj"
+          when "disconnect"
+            print "*#{@id} disconnected from #{event.peer}*"
+        event = @host\service 100
+
+        -- id, msg = data\match "(%x*) ?(.*)"
+        -- table.insert @lines, id .. ": " .. msg
+        -- data, _error = @udp\receive!
+      -- if _error and _error != "timeout" then error "unknown network error: " .. tostring _error
       @ticks -= @updr
 
   input: (key,char) =>
     switch key
-      when 'return'
+      when "return"
         if #@textbuf > 0
-          @line = 'post %s %s'\format @id, @textbuf
+          @line = "post %s %s"\format @id, @textbuf
           table.insert @history, 2, @textbuf
-          @textbuf = ''
-          @inbuf, @enbuf = '', ''
+          @textbuf = ""
+          @inbuf, @enbuf = "", ""
           @size, @cursor = 0, 0
-          @history[1] = ''
-      when 'backspace'
-        temp, temp1 = @textbuf\slice @cursor
+          @history[1] = ""
+      when "backspace"
+        temp, temp1 = _.cut @textbuf, @cursor
         @size = math.max 0, #@textbuf - 1
         @cursor = math.max 0, @cursor - 1
         temp = temp\sub 1, @cursor
         @textbuf = temp .. temp1
         @history[1] = @textbuf
-      when 'right'
+      when "right"
         @cursor += 1
-      when 'left'
+      when "left"
         @cursor = math.max 0, @cursor - 1
-      when 'home'
+      when "home"
         @cursor = 0
-      when 'end'
+      when "end"
         @cursor = @size
-      when 'up'
+      when "up"
         @vursor = math.min #@history, @vursor + 1
         @textbuf = @history[@vursor]
         @size = #@textbuf
         @cursor = @size
-      when 'down'
+      when "down"
         @vursor = math.max 1, @vursor - 1
         @textbuf = @history[@vursor]
         @size = #@textbuf
         @cursor = @size
       else
         if char
-          temp, temp1 = @textbuf\slice @cursor
+          temp, temp1 = _.cut @textbuf, @cursor
           @cursor += 1
           @textbuf = temp .. char .. temp1
           @size = #@textbuf
           @history[1] = @textbuf
 
-    @inbuf,@enbuf = @textbuf\slice @cursor
+    @inbuf,@enbuf = _.cut @textbuf, @cursor
 
 
   draw: () =>
     text = @inbuf .. @enbuf
     h = @font\getHeight!
-    w = math.max 256, @font\getWidth text .. '_ '
+    w = math.max 256, @font\getWidth text .. "_ "
     b = {x: 0,y: @framebuffer\getHeight! - 132, w: @framebuffer\getWidth!, h: 132}
     if #@lines > 0
       rh = #@lines * h
       for i, v in ipairs @lines
-        w = math.max w, @font\getWidth v .. ' '
+        w = math.max w, @font\getWidth v .. " "
       for i, line in ipairs @lines
-        id, msg = line\match '(%x*): (.*)'
+        id, msg = line\match "(%x*): (.*)"
         y = @returnbuffer\getHeight! - (#@lines - i + 1) * h
         if id == @id
           @returnbuffer\setColor 086 / 255, 193 / 255, 215 / 255

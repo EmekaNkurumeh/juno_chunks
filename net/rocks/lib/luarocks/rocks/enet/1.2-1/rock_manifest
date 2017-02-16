@@ -1,0 +1,9 @@
+rock_manifest = {
+   doc = {
+      ["README.md"] = "346bff60aa6772bebf0878deae5024ec"
+   },
+   ["enet-1.2-1.rockspec"] = "4bf16bde34285aea16b26915542256a5",
+   lib = {
+      ["enet.so"] = "d0137f82eb4d902fca846f0ddc1ac48e"
+   }
+}
