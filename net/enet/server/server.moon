@@ -10,7 +10,7 @@ require "enet"
 server = {
   running: true,
   port: arg[1] or 8081
-  client: {}
+  clients: {}
   timeout: 100
 }
 
@@ -26,22 +26,26 @@ while server.running
   if event
     switch event.type
       when "receive"
-        print "recieve: #{event.peer} says #{event.data}"
-        server.host\broadcast "#{event.peer}: says #{event.data}"
-        -- id, msg = data\match "(%x*) (.*)"
-        -- if id and msg
-          -- print id .. ": " .. msg
-          -- server.host\broadcast id .. " " .. msg
-          --
+        id, msg = server.clients["#{event.peer}"], event.data
+        if id and msg
+          print "recieve: #{event.peer}  #{event.data}"
+          server.host\broadcast "#{id}: #{msg}"
       when "connect"
         print "connect: #{event.peer}"
-        server.host\broadcast "client #{event.peer} has connected"
+        event = server.host\service server.timeout
+        id = event.data\match "(%x*)"
+        server.clients["#{event.peer}"] = id
+        if id
+          server.host\broadcast "* #{id} has connected *"
 
       when "disconnect"
         print "disconnect: #{event.peer}"
-        server.host\broadcast "client #{event.peer} has disconnected"
+        id = server.clients["#{event.peer}"]
+        if id
+          server.host\broadcast "* #{id} has disconnected *"
+          server.clients["#{event.peer}"] = nil
 
       else
-        print "got: #{event.type}; #{event.peer}; "
+        print "got: request type #{event.type}; from #{event.peer}; #{event.data};"
 
 server.host\flush!

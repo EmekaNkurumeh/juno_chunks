@@ -30,40 +30,36 @@ class client
   connect: =>
     @host = enet.host_create!
     @server = @host\connect @addr .. ":" .. @port
-    -- event = @host\service 100
-    -- if not event
-    --   os.exit!
 
   disconnect: =>
     @server\disconnect!
     @host\flush!
-    -- event = @host\service 100
-    -- if event
-    --   if event.type ~= "disconnect"
-    --     os.exit!
+
 
   update: (dt) =>
     @ticks += dt
     @caret = (juno.time.getTime! % .6 < .3) and "_" or " "
     if @ticks > @updr
       event = @host\service 100
+      if @line then
+        @server\send @line
+        @line = nil
       if event
-        if @line then
-          @server\send @line
-          @line = nil
         switch event.type
           when "receive"
-            print "receive: #{event.peer} says #{event.data}"
+            print event.data
+            table.insert @lines, event.data
 
-        -- id, msg = data\match "(%x*) ?(.*)"
-        -- table.insert @lines, id .. ": " .. msg
+          when "connect"
+            @server\send "#{@id}"
+
       @ticks -= @updr
 
   input: (key,char) =>
     switch key
       when "return"
         if #@textbuf > 0
-          @line = "%s %s"\format @id, @textbuf
+          @line = @textbuf
           table.insert @history, 2, @textbuf
           @textbuf = ""
           @inbuf, @enbuf = "", ""
@@ -122,9 +118,15 @@ class client
           @returnbuffer\drawText @font, line, 8, y - 30
           @returnbuffer\setColor 1, 1, 1
         else
-          @returnbuffer\setColor 205 / 255, 89 / 255, 90 / 255
-          @returnbuffer\drawText @font, line, 8, y - 30
-          @returnbuffer\setColor 1, 1, 1
+          ast, msg = line\match "."
+          if ast == "*"
+            @returnbuffer\setColor 086 / 255, 215 / 255, 109 / 255
+            @returnbuffer\drawText @font, line, 8, y - 30
+            @returnbuffer\setColor 1, 1, 1
+          else
+            @returnbuffer\setColor 205 / 255, 89 / 255, 90 / 255
+            @returnbuffer\drawText @font, line, 8, y - 30
+            @returnbuffer\setColor 1, 1, 1
       @framebuffer\copyPixels @returnbuffer, 0, @framebuffer\getHeight! - 132, b
       @framebuffer\drawBox 4, math.max(@framebuffer\getHeight! - rh - 32, @framebuffer\getHeight! - (h * 6) - 32), w - 2, math.min(rh + 4, 106)
     @framebuffer\drawBox 4, @framebuffer\getHeight! - h - 8, w - 2, h + 4
