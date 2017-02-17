@@ -25,21 +25,23 @@ while server.running
   event = server.host\service server.timeout
   if event
     switch event.type
-      when "recieve"
-        print "got message: ", event.data
+      when "receive"
+        print "recieve: #{event.peer} says #{event.data}"
+        server.host\broadcast "#{event.peer}: says #{event.data}"
         -- id, msg = data\match "(%x*) (.*)"
         -- if id and msg
           -- print id .. ": " .. msg
           -- server.host\broadcast id .. " " .. msg
           --
       when "connect"
-        -- print "* " .. event.peer .. " connected *"
-        print "* connected *"
+        print "connect: #{event.peer}"
+        server.host\broadcast "client #{event.peer} has connected"
 
       when "disconnect"
-        -- print "* " .. event.peer .. " disconnected *"
-        print "* disconnected *"
+        print "disconnect: #{event.peer}"
+        server.host\broadcast "client #{event.peer} has disconnected"
 
-    event = server.host\service!
+      else
+        print "got: #{event.type}; #{event.peer}; "
 
 server.host\flush!

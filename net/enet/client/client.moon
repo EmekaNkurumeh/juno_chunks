@@ -24,55 +24,46 @@ class client
 
     @port = port or 8081
     @addr = addr or "localhost"
-    @id = id or "%06x"\format math.random 0xffffff
     @updr = updr or 0.1
+    @id = id or "%06x"\format math.random 0xffffff
 
   connect: =>
     @host = enet.host_create!
     @server = @host\connect @addr .. ":" .. @port
-    event = @host\service 100
-    if event
-      if event.type == "connect"
-        print "* #{@id} connected to #{event.peer}*"
+    -- event = @host\service 100
+    -- if not event
+    --   os.exit!
 
   disconnect: =>
     @server\disconnect!
     @host\flush!
-    event = @host\service 100
-    if event
-      if event.type == "disconnect"
-        print "* #{@id} disconnected from #{event.peer}*"
+    -- event = @host\service 100
+    -- if event
+    --   if event.type ~= "disconnect"
+    --     os.exit!
 
   update: (dt) =>
     @ticks += dt
     @caret = (juno.time.getTime! % .6 < .3) and "_" or " "
     if @ticks > @updr
       event = @host\service 100
-      -- if @line then event.peer\send @line
-      -- if @line then @line = nil
-      while event
+      if event
+        if @line then
+          @server\send @line
+          @line = nil
         switch event.type
           when "receive"
-            print event.data
-            event.peer\send "jh"
-          when "connect"
-            print "*#{@id} connected to #{event.peer}*"
-            event.peer\send "hj"
-          when "disconnect"
-            print "*#{@id} disconnected from #{event.peer}*"
-        event = @host\service 100
+            print "receive: #{event.peer} says #{event.data}"
 
         -- id, msg = data\match "(%x*) ?(.*)"
         -- table.insert @lines, id .. ": " .. msg
-        -- data, _error = @udp\receive!
-      -- if _error and _error != "timeout" then error "unknown network error: " .. tostring _error
       @ticks -= @updr
 
   input: (key,char) =>
     switch key
       when "return"
         if #@textbuf > 0
-          @line = "post %s %s"\format @id, @textbuf
+          @line = "%s %s"\format @id, @textbuf
           table.insert @history, 2, @textbuf
           @textbuf = ""
           @inbuf, @enbuf = "", ""
