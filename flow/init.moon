@@ -1,9 +1,7 @@
 init = {}
 p = require "particle"
-
 buf = juno.Buffer.fromBlank juno.graphics.getSize!
-_p = p 10, 10, .9, buf
-_p\push 5,7
+-- 18:21
 init.load = ->
 
 

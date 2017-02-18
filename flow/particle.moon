@@ -20,7 +20,7 @@ pnk = (amp) ->
 sx = 1
 sy = 1
 
-class
+class 
   new: (@x, @y, @drag, @buf) =>
     @px = @x
     @py = @y
