@@ -1,8 +1,11 @@
 G = {
   title   = "metaballs",
-  width  = 144,
-  height = 144,
-  scale  = 2
+  width  = 256,
+  height = 256,
+  -- width  = 144,
+  -- height = 144,
+  scale  = 2,
+  balls = {}
 }
 
 return {

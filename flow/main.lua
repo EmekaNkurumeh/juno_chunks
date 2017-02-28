@@ -1,4 +1,3 @@
--- 18:21
 local p = require "particle"
 local perlin = require "perlin"
 local rand = math.random
