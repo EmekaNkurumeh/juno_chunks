@@ -2,14 +2,16 @@
 
 function juno.onLoad(dt)
   G.field = juno.Buffer.fromBlank(G.width, G.height)
+  G.over = juno.Buffer.fromBlank(G.width, G.height)
   G.field:drawBox(0, 0, G.width, G.height)
+  -- G.field:setColor(.5, .5, .5)
   G.tickTimer = 0
   -- Initialise player
   G.player = {
     x = 20,
     y = G.height / 2,
     direction = "down",
-    color = { 1, 1, 1 },
+    color = { .3, .3, .3 },
   }
   -- Initialise AIs
   G.ai = {}
@@ -29,12 +31,8 @@ end
 
 function juno.onKeyDown(k,e)
   -- Handle player movement keys
-  local d = G.player.direction
   if k == "left" or k == "up" or k == "down" or k == "right" then
-    print(d, k)
-    if d ~= k then
-      d = k
-    end
+    G.player.direction = k
   end
   -- Handle game restart key
   if k == "r" then
@@ -82,6 +80,11 @@ local function updateAi(ai, dt)
   end
 end
 
+local stroke = {
+  {-1, -1}, {0, -1}, {1, -1},
+  {-1,  0},          {1,  0},
+  {-1,  1}, {0,  1}, {1,  1}
+}
 
 local function updateBike(bike)
   -- Don't update the bike if its dead
@@ -97,6 +100,9 @@ local function updateBike(bike)
   end
   -- Draw bike
   G.field:drawPixel(bike.x, bike.y, unpack(bike.color))
+  for k, v in ipairs(stroke) do
+    G.over:drawPixel(bike.x + v[1], bike.y + v[2], 1, 1, 1)
+  end
 end
 
 
@@ -126,5 +132,6 @@ end
 
 
 function juno.onDraw()
+  juno.graphics.draw(G.over, 0, 0, nil, nil,G.scale)
   juno.graphics.draw(G.field, 0, 0, nil, nil,G.scale)
 end
