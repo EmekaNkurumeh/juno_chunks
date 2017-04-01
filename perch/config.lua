@@ -4,10 +4,10 @@ G = {
   author = "emekamonkey",
   version = "0.1.0",
   license = "MIT",
-  title = "p8",
+  title = "perch",
   width = 512,
   height = 512,
-  scale = 8,
+  scale = 1,
   debug = true,
 }
 
