@@ -22,11 +22,11 @@ function Game.update(dt)
 end
 
 function Game.draw()
-  juno.graphics.copyPixels(Game.framebuffer, 0, 0)
-  
   Game.postbuffer = Game.framebuffer:clone()
-  Game.framebuffer:reset()
   Game.framebuffer:clear(unpack(Game.bgcolor))
+  Game.framebuffer:reset()
+  -- do drawing of members
+  juno.graphics.copyPixels(Game.framebuffer, 0, 0)
 end
 
 function Game.key(key, char)

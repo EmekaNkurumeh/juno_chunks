@@ -10,7 +10,7 @@ function refresh()
   G.particles = {}
   G.field = {}
   for i = 1, G.particle_count do
-    local c = {rand(255) / 255, rand(255) / 255, rand(255) / 255}
+    local c = { rand(255) / 255, rand(255) / 255, rand(255) / 255 }
     local particle = p:new(rand(w), rand(h), .9, G.screen, c)
     table.insert(G.particles, particle)
   end
@@ -19,11 +19,11 @@ end
 function calculate_field()
   local sx = w / G.rows
   local sy = h / G.columns
-  for x = 0, G.rows do
+  for x = G.rows, 0, -1 do
     if not G.field[x] then
       G.field[x] = {}
     end
-    for y = 0, G.columns do
+    for y = G.columns, 0, -1 do
       if not G.field[x][y] then
         local v = {}
         v.dx = 0
@@ -50,7 +50,8 @@ end
 
 function juno.onUpdate(dt)
   calculate_field()
-  for k, particle in ipairs(G.particles) do
+  for k = #G.particles, 1, -1  do
+    local particle = G.particles[k]
     particle:update()
   end
   G.drift = G.drift + dt / 1000
@@ -70,7 +71,8 @@ function juno.onKeyDown(key)
 
 function juno.onDraw()
   juno.graphics.drawBuffer(G.debug_screen, 0, 0)
-  for k, particle in ipairs(G.particles) do
+  for k = #G.particles, 1, -1  do
+    local particle = G.particles[k]
     particle:draw()
   end
   juno.graphics.drawBuffer(G.screen, 0, 0)
