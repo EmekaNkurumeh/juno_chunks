@@ -29,7 +29,7 @@
 ###### `juno.onDraw()`
 ###### `juno.onKeyDown(key, char)`
 ###### `juno.onKeyUp(key)`
-###### `juno.onMouseMove(x,y)`
+###### `juno.onMouseMove(x, y)`
 ###### `juno.onMouseDown(x, y, button)`
 ###### `juno.onMouseUp(x, y, button)`
 ###### `juno.onQuit()`
