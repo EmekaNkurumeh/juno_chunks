@@ -55,8 +55,8 @@ function juno.onDraw()
   for i = particle_count, 1, -1 do
   	local p = particles[i]
   	juno.graphics.drawCircle(p.x, p.y, 4)
-		for k = particle_count, 1, -1 do
-			local o = particles[k]
+		for j = particle_count, 1, -1 do
+			local o = particles[j]
 			if sqrt((p.x - o.x)^2 + (p.y - o.y)^2) < 80 then
 				juno.graphics.drawLine(p.x, p.y, o.x, o.y)
 			end
