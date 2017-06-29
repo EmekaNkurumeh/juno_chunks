@@ -4,7 +4,7 @@ local rand = math.random
 local floor = math.floor
 local sin = math.sin
 local cos = math.cos
-local w, h = juno.graphics.getSize()
+local w, h = sol.graphics.getSize()
 
 function refresh()
   G.particles = {}
@@ -33,22 +33,22 @@ function calculate_field()
       local rot = perlin:noise((x * sx) / 100, (y * sy)/ 100, G.drift) * 360
       G.field[x][y].dx = cos(rot)
       G.field[x][y].dy = sin(rot)
-      if juno.debug.getVisible() then
+      if sol.debug.getVisible() then
         G.debug_screen:drawLine(x * sx, y * sy, x * sx + G.field[x][y].dx * 16, y * sy + G.field[x][y].dy * 16)
       end
     end
   end
 end
 
-function juno.onLoad()
-  G.screen = juno.Buffer.fromBlank(juno.graphics.getSize())
-  G.debug_screen = juno.Buffer.fromBlank(juno.graphics.getSize())
+function sol.onLoad()
+  G.screen = sol.Buffer.fromBlank(sol.graphics.getSize())
+  G.debug_screen = sol.Buffer.fromBlank(sol.graphics.getSize())
   perlin:load()
   calculate_field()
   refresh()
 end
 
-function juno.onUpdate(dt)
+function sol.onUpdate(dt)
   calculate_field()
   for k = #G.particles, 1, -1  do
     local particle = G.particles[k]
@@ -58,24 +58,24 @@ function juno.onUpdate(dt)
   -- collectgarbage()
 end
 
-function juno.onKeyDown(key)
+function sol.onKeyDown(key)
   if key == "tab" then
-    juno.debug.setVisible(not juno.debug.getVisible())
-    G.screen:setAlpha(juno.debug.getVisible() and .5 or 1)
+    sol.debug.setVisible(not sol.debug.getVisible())
+    G.screen:setAlpha(sol.debug.getVisible() and .5 or 1)
   elseif key == "r" then
-    juno.onLoad()
+    sol.onLoad()
   elseif key == "escape" then
     os.exit()
   end
  end
 
-function juno.onDraw()
-  juno.graphics.drawBuffer(G.debug_screen, 0, 0)
+function sol.onDraw()
+  sol.graphics.drawBuffer(G.debug_screen, 0, 0)
   for k = #G.particles, 1, -1  do
     local particle = G.particles[k]
     particle:draw()
   end
-  juno.graphics.drawBuffer(G.screen, 0, 0)
+  sol.graphics.drawBuffer(G.screen, 0, 0)
   G.debug_screen:clear()
   G.screen:clear()
 end

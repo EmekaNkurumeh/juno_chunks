@@ -1,7 +1,7 @@
 local particle = {}
 particle.__index = particle
 
-local w, h = juno.graphics.getSize()
+local w, h = sol.graphics.getSize()
 local floor = math.floor
 
 function  particle:new(x, y, drag, buf, color)

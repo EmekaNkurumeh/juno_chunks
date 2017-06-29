@@ -30,8 +30,8 @@ local txt = {
 }
 
 local box
-function juno.onLoad(dt)
-  G.screen = juno.Buffer.fromBlank(G.width, G.height)
+function sol.onLoad(dt)
+  G.screen = sol.Buffer.fromBlank(G.width, G.height)
   G.screen:drawBox(0, 0, G.width, G.height)
   str = "" 
   box = {x = 0, y = G.height, w = G.width, h = G.height / 2}
@@ -46,24 +46,24 @@ function juno.onLoad(dt)
 end
 
 
-function juno.onKeyDown(k,e)
-  if k == "r" then juno.onLoad() end
+function sol.onKeyDown(k,e)
+  if k == "r" then sol.onLoad() end
 end
 
 
-function juno.onUpdate(dt)
+function sol.onUpdate(dt)
   flux.update(dt)
   coil.update(dt)
 end
 
-local font = juno.Font.fromEmbedded(8)
+local font = sol.Font.fromEmbedded(8)
 
-function juno.onDraw()
+function sol.onDraw()
   G.screen:drawRect(box.x, box.y, box.w, box.h, 1, .5, 1)
 
   draw_stroke(font, str, font:getWidth(" "), (G.height - G.height / 2) + font:getHeight(), nil, {.2,.8,1})
 
   -- G.screen:reset()
-  juno.graphics.draw(G.screen, 0, 0, nil, nil,G.scale)
+  sol.graphics.draw(G.screen, 0, 0, nil, nil,G.scale)
   G.screen:clear()
 end

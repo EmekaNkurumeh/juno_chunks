@@ -7,7 +7,7 @@ class Tile
     @width = w or 0
     @height = h or 0
     @color = c or {1, 1, 1}
-    @buf = juno.Buffer.fromBlank @width, @height
+    @buf = sol.Buffer.fromBlank @width, @height
 
   set_freq: (@freq) =>
 
@@ -41,7 +41,7 @@ class Tile
       @play!
   draw: () =>
     @buf\drawRect 0, 0, @width, @height, unpack @color
-    juno.graphics.copyPixels @buf, @x, @y, nil
+    sol.graphics.copyPixels @buf, @x, @y, nil
 
   -- G.tile[1][1].sound:setCallback(function(t)
   --   local gen = osc.wht()

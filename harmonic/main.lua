@@ -1,6 +1,6 @@
 pi = math.pi
 
-function juno.onLoad()
+function sol.onLoad()
   math.randomseed(os.time())
   G.timer = 0
   cir = {
@@ -10,13 +10,13 @@ function juno.onLoad()
   }
 end
 
-function juno.onUpdate(dt)
-  G.fps = juno.time.getFps()
+function sol.onUpdate(dt)
+  G.fps = sol.time.getFps()
   interval = 1
   cir.o = 256*(math.sin(G.timer * 0.5 * pi / (G.fps*interval)))
   G.timer = G.timer + 1
 end
 
-function juno.onDraw()
-  juno.graphics.drawCircle(cir.x,cir.y+cir.o,cir.r)
+function sol.onDraw()
+  sol.graphics.drawCircle(cir.x,cir.y+cir.o,cir.r)
 end

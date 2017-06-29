@@ -72,16 +72,16 @@ function zsort(p1,p2)
     return p1.z>p2.z
 end
 
-function juno.onLoad()
-    G.buffer = juno.Buffer.fromBlank(G.width,G.height)
+function sol.onLoad()
+    G.buffer = sol.Buffer.fromBlank(G.width,G.height)
 end
-function juno.onUpdate(dt)
-    if juno.keyboard.isDown("left") then G.cx=G.cx+2 end
-    if juno.keyboard.isDown("right") then G.cx=G.cx-2 end
-    if juno.keyboard.isDown("up") then G.cy=G.cy+2 end
-    if juno.keyboard.isDown("down") then G.cy=G.cy-2 end
-    if juno.keyboard.isDown("x") then G.cz=G.cz+2 end
-    if juno.keyboard.isDown("c") then G.cz=G.cz-2 end
+function sol.onUpdate(dt)
+    if sol.keyboard.isDown("left") then G.cx=G.cx+2 end
+    if sol.keyboard.isDown("right") then G.cx=G.cx-2 end
+    if sol.keyboard.isDown("up") then G.cy=G.cy+2 end
+    if sol.keyboard.isDown("down") then G.cy=G.cy-2 end
+    if sol.keyboard.isDown("x") then G.cz=G.cz+2 end
+    if sol.keyboard.isDown("c") then G.cz=G.cz-2 end
     if G.mode == "play" then
         if (G.t%900>450) then
             createCurve(G.t)
@@ -96,19 +96,19 @@ function juno.onUpdate(dt)
         G.t = G.t + 1
     end
 end
-function juno.onDraw()
+function sol.onDraw()
     for k,p in pairs(G.points) do
         i,j = p2d(p)
         G.buffer:drawRect(i,j,4,4,unpack(G.colors[p.c]))
     end
     G.angle = G.angle + 0.05
-    juno.graphics.copyPixels(G.buffer,0,0,nil,G.scale)
-    juno.graphics.drawText(juno.Font.fromEmbedded(14),string.format("(%d,%d,%d)",G.cx,G.cy,G.cz),10,10)
-    juno.graphics.drawText(juno.Font.fromEmbedded(14),G.t,10,30)
+    sol.graphics.copyPixels(G.buffer,0,0,nil,G.scale)
+    sol.graphics.drawText(sol.Font.fromEmbedded(14),string.format("(%d,%d,%d)",G.cx,G.cy,G.cz),10,10)
+    sol.graphics.drawText(sol.Font.fromEmbedded(14),G.t,10,30)
     G.buffer:clear(unpack(G.colors[10]))
 end
 
-function juno.onKeyDown(k)
+function sol.onKeyDown(k)
     if k == "p" and G.mode == "play" then 
         G.mode = "paused" 
     elseif k =="p" and G.mode == "paused" then 

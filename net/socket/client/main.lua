@@ -1,26 +1,26 @@
 local client = require 'client'
 
-function juno.onLoad()
+function sol.onLoad()
   G.client = client(G.port, G.addr, G.title, G.updr)
   G.client:connect()
 end
 
-function juno.onUpdate(dt)
+function sol.onUpdate(dt)
   G.client:update(dt)
 end
 
-function juno.onDraw()
+function sol.onDraw()
   G.client:draw()
 end
 
-function juno.onKeyDown(key,char)
+function sol.onKeyDown(key,char)
   G.client:input(key,char)
   if key == 'escape' then
-    juno.onQuit()
+    sol.onQuit()
     os.exit()
   end
 end
 
-function juno.onQuit()
+function sol.onQuit()
   G.client:disconnect()
 end

@@ -1,8 +1,8 @@
 
 
-function juno.onLoad(dt)
-  G.field = juno.Buffer.fromBlank(G.width, G.height)
-  G.over = juno.Buffer.fromBlank(G.width, G.height)
+function sol.onLoad(dt)
+  G.field = sol.Buffer.fromBlank(G.width, G.height)
+  G.over = sol.Buffer.fromBlank(G.width, G.height)
   G.field:drawBox(0, 0, G.width, G.height)
   -- G.field:setColor(.5, .5, .5)
   G.tickTimer = 0
@@ -29,14 +29,14 @@ function juno.onLoad(dt)
 end
 
 
-function juno.onKeyDown(k,e)
+function sol.onKeyDown(k,e)
   -- Handle player movement keys
   if k == "left" or k == "up" or k == "down" or k == "right" then
     G.player.direction = k
   end
   -- Handle game restart key
   if k == "r" then
-    juno.onLoad()
+    sol.onLoad()
   end
 end
 
@@ -117,7 +117,7 @@ local function onTick()
 end
 
 
-function juno.onUpdate(dt)
+function sol.onUpdate(dt)
   -- Update tick timer
   G.tickTimer = G.tickTimer - dt
   while G.tickTimer <= 0 do
@@ -126,12 +126,12 @@ function juno.onUpdate(dt)
   end
   -- Player is dead? Restart the game
   if G.player.dead then
-    juno.onLoad()
+    sol.onLoad()
   end
 end
 
 
-function juno.onDraw()
-  juno.graphics.draw(G.over, 0, 0, nil, nil,G.scale)
-  juno.graphics.draw(G.field, 0, 0, nil, nil,G.scale)
+function sol.onDraw()
+  sol.graphics.draw(G.over, 0, 0, nil, nil,G.scale)
+  sol.graphics.draw(G.field, 0, 0, nil, nil,G.scale)
 end

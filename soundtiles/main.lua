@@ -1,8 +1,8 @@
 Tile = require 'tile'
 osc = require 'osc'
 
-function juno.onLoad()
-  juno.debug.setVisible(true)
+function sol.onLoad()
+  sol.debug.setVisible(true)
   G.tile = {}
   for x = 1, 16 do
     G.tile[x] = {}
@@ -14,17 +14,17 @@ function juno.onLoad()
       t = Tile((x*32)-32,(y*32)-32,32,32,{b,g,r},440,1)
       t:set_freq(400)
       t:set_amp(1)
-      juno.audio.master:setCallback(t:set_gen('saw'))
+      sol.audio.master:setCallback(t:set_gen('saw'))
       G.tile[x][y] = t
     end
   end
 end
 
-function juno.onUpdate(dt)
+function sol.onUpdate(dt)
 
 end
 
-function juno.onDraw()
+function sol.onDraw()
   for x = 1, 16 do
     for y = 1, 16 do
       tile = G.tile[x][y]
@@ -33,15 +33,15 @@ function juno.onDraw()
   end
 end
 
-function juno.onKeyDown(key, char)
+function sol.onKeyDown(key, char)
   if key == 'escape' then os.exit() end
 end
 
--- function juno.onMouseMove(x, y)
---   gain = math.pow(1 - (y / juno.graphics.getWidth()), 1.8)
---   freq = math.pow(x / juno.graphics.getHeight(), 2) * 3000 + 120
+-- function sol.onMouseMove(x, y)
+--   gain = math.pow(1 - (y / sol.graphics.getWidth()), 1.8)
+--   freq = math.pow(x / sol.graphics.getHeight(), 2) * 3000 + 120
 -- end
 
-function juno.onQuit()
+function sol.onQuit()
 
 end

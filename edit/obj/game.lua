@@ -11,7 +11,7 @@ function Game.init(width, height, color)
   Game.width = width or G.width
   Game.height = height or G.height
 
-  Game.framebuffer = juno.Buffer.fromBlank(G.width, G.height)
+  Game.framebuffer = sol.Buffer.fromBlank(G.width, G.height)
   Game.postbuffer = Game.framebuffer:clone()
 end
 
@@ -26,21 +26,21 @@ function Game.draw()
   Game.framebuffer:clear(unpack(Game.bgcolor))
   Game.framebuffer:reset()
   -- do drawing of members
-  juno.graphics.copyPixels(Game.framebuffer, 0, 0)
+  sol.graphics.copyPixels(Game.framebuffer, 0, 0)
 end
 
 function Game.key(key, char)
   if key == "tab" then
-    local mode = not juno.debug.getVisible()
-    juno.debug.setVisible(G.debug and mode)
+    local mode = not sol.debug.getVisible()
+    sol.debug.setVisible(G.debug and mode)
   elseif key == "`" then
-    local mode = not juno.debug.getFocused()
-    juno.debug.setFocused(G.debug and mode)
+    local mode = not sol.debug.getFocused()
+    sol.debug.setFocused(G.debug and mode)
   elseif key == "escape" then
-    juno.onQuit()
+    sol.onQuit()
     os.exit()
   elseif key == "r" and G.debug then
-    juno.onLoad()
+    sol.onLoad()
   end
 end
 

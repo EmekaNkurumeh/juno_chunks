@@ -17,9 +17,9 @@ class client
     @enbuf = ''
     @caret = '_'
 
-    @font = juno.Font.fromEmbedded 16
-    @framebuffer = juno.Buffer.fromBlank juno.graphics.getSize!
-    @returnbuffer = juno.Buffer.fromBlank juno.graphics.getSize!
+    @font = sol.Font.fromEmbedded 16
+    @framebuffer = sol.Buffer.fromBlank sol.graphics.getSize!
+    @returnbuffer = sol.Buffer.fromBlank sol.graphics.getSize!
 
     @port = port or 8080
     @addr = addr or 'localhost'
@@ -40,7 +40,7 @@ class client
 
   update: (dt) =>
     @ticks += dt
-    @caret = (juno.time.getTime! % .6 < .3) and '_' or ' '
+    @caret = (sol.time.getTime! % .6 < .3) and '_' or ' '
     if @ticks > @updr
       if @line then @udp\send @line
       if @line then @line = nil
@@ -122,7 +122,7 @@ class client
       @framebuffer\drawBox 4, math.max(@framebuffer\getHeight! - rh - 32, @framebuffer\getHeight! - (h * 6) - 32), w - 2, math.min(rh + 4, 106)
     @framebuffer\drawBox 4, @framebuffer\getHeight! - h - 8, w - 2, h + 4
     @framebuffer\drawText @font, @inbuf .. @caret .. @enbuf, 8, (@framebuffer\getHeight! - h - 9) + 2
-    juno.graphics.copyPixels @framebuffer, 0, 0
+    sol.graphics.copyPixels @framebuffer, 0, 0
     @framebuffer\clear!
     @returnbuffer\clear!
 client

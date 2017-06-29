@@ -1,7 +1,7 @@
 local Game = require "obj.game"
 local Input = require "obj.input"
 
-function juno.onLoad()
+function sol.onLoad()
   Game.init(G.width, G.height)
   Input.register({
     left    = {"left", "a"},
@@ -16,14 +16,14 @@ function juno.onLoad()
   })
 end
 
-function juno.onUpdate(dt)
+function sol.onUpdate(dt)
   Game.update(dt)
 end
 
-function juno.onDraw()
+function sol.onDraw()
   Game.draw()
 end
 
-function juno.onKeyDown(key, char)
+function sol.onKeyDown(key, char)
   Game.key(key, char)
 end

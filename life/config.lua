@@ -20,10 +20,10 @@ input = {
 
   end,
   ["tab"] = function()
-    juno.debug.setVisible(not juno.debug.getVisible())
+    sol.debug.setVisible(not sol.debug.getVisible())
   end,
   ["escape"] = function()
-    if juno.onQuit then juno.onQuit() end
+    if sol.onQuit then sol.onQuit() end
     os.exit()
   end,
   ["p"] = function()
@@ -38,7 +38,7 @@ input = {
     collectgarbage()
     collectgarbage()
     -- init()
-    juno.onLoad()
+    sol.onLoad()
   end
 }
 

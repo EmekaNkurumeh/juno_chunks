@@ -191,7 +191,7 @@
         [_onEvent] = function: 0x127fdf60
     }
     [_argv] = {
-        [1] = "juno"
+        [1] = "sol"
         [2] = "."
     }
     [onLoad] = function: 0x1286a910

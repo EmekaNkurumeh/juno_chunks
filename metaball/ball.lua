@@ -14,15 +14,15 @@ end
 math.randomseed(os.time())
 
 
-function Ball:new(x, y, r)
-	self.x = x
-	self.y = y
-	self.r = r
+function Ball:new(r)
+	self.x = math.random(0, G.width)
+	self.y = math.random(0, G.height)
+	self.r = math.random(10, 25)
 	self.vx = 0
 	self.vy = 0
 	self.px = self.x
 	self.py = self.y
-	self:push(math.random(-0x5, 0x5), math.random(-0x5, 0x5))
+	self:push(math.random(-0x2, 0x2), math.random(-0x2, 0x2))
 end
 
 function Ball:distance(x, y)

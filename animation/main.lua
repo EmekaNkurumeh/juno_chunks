@@ -19,12 +19,12 @@ function play(dt)
     image.anfm = 1
   end
 end
-screen = juno.Buffer.fromBlank(juno.graphics.getSize())
-function juno.onLoad()
-  juno.debug.setVisible(true)
-  image.data = juno.Buffer.fromFile("zombie.png")
+screen = sol.Buffer.fromBlank(sol.graphics.getSize())
+function sol.onLoad()
+  sol.debug.setVisible(true)
+  image.data = sol.Buffer.fromFile("zombie.png")
 end
-function juno.onUpdate(dt)
+function sol.onUpdate(dt)
   require("lib.stalker").update(dt)
   tick.update(dt)
   -- print(image.anfm)
@@ -32,9 +32,9 @@ function juno.onUpdate(dt)
 
 end
 
-function juno.onDraw()
+function sol.onDraw()
   screen:drawRect(0,0,256,256,unpack{1,1,1})
 
   screen:drawBuffer(image.data,image.x,image.y,{x = 0+(1*(image.anfm*image.width)), y = 0, w = 8, h = 13})
-  juno.graphics.copyPixels(screen,0,0,nil,4)
+  sol.graphics.copyPixels(screen,0,0,nil,4)
 end
